@@ -9,6 +9,7 @@ RUN clj -Sforce -T:build all
 FROM azul/zulu-openjdk-alpine:17
 
 COPY --from=build /target/stormdnd-standalone.jar /stormdnd/stormdnd-standalone.jar
+COPY --from=build /resources /resources
 
 EXPOSE $PORT
 
