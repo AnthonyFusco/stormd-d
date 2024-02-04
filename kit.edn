@@ -1,0 +1,8 @@
+{:full-name "storm/stormdnd"
+ :ns-name   "storm.stormdnd"
+ :sanitized "storm/stormdnd"
+ :name      "stormdnd"
+ :modules   {:root         "modules"
+             :repositories [{:url  "https://github.com/kit-clj/modules.git"
+                             :tag  "master"
+                             :name "kit-modules"}]}}
