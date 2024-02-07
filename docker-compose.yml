@@ -1,0 +1,21 @@
+version: '3'
+services:
+  stormstats:
+    restart: always
+    container_name: stormstats
+    env_file:
+      - .env
+    image: stormgroup/stormstats
+    volumes:
+      - ./data:/data
+      - ./backup:/backup
+    ports:
+      - "3101:3000"
+      - "7043:7043"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stats.rule=Host(`stats.merlinade.net`)"
+      - "traefik.http.routers.stats.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.stats.tls.domains[0].main=merlinade.net"
+      - "traefik.http.routers.stats.tls.domains[0].sans=*.merlinade.net"
+      - "traefik.http.services.stats.loadbalancer.server.port=3042"

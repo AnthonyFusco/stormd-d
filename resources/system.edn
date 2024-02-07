@@ -8,6 +8,10 @@
   :host #or [#env HTTP_HOST "0.0.0.0"]
   :handler #ig/ref :handler/ring}
 
+ :nrepl/server
+ {:port #long #or [#env NREPL_PORT 7043]
+  :bind #or [#env NREPL_HOST "0.0.0.0"]}
+
  :handler/ring
  {:router #ig/ref :router/core
   :api-path "/api"

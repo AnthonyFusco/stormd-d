@@ -1,6 +1,7 @@
 (ns storm.stormdnd.engine.engine
   (:require [storm.stormdnd.db.db :as db]
-            [clojure.core.reducers :as r]))
+            [clojure.core.reducers :as r]
+            [editscript.core :as es]))
 
 (defn with-world [f & args]
   (fn [world]

@@ -22,7 +22,9 @@
            ;; kit Libs
            io.github.kit-clj/kit-core      {:mvn/version "1.0.6"}
            io.github.kit-clj/kit-undertow  {:mvn/version "1.0.6"}
-           hiccup/hiccup                   {:mvn/version "2.0.0-alpha2"}}
+           hiccup/hiccup                   {:mvn/version "2.0.0-alpha2"}
+           io.github.kit-clj/kit-nrepl     {:mvn/version "1.0.3"}
+           juji/editscript                 {:mvn/version "0.6.3"}}
  :aliases {:build {:deps       {io.github.clojure/tools.build {:git/sha "24f2894"
                                                                :git/tag "v0.9.5" :git/url "https://github.com/clojure/tools.build.git"}}
                    :ns-default build}

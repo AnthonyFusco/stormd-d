@@ -5,6 +5,7 @@
     [storm.stormdnd.engine.engine :as engine]
     [storm.stormdnd.web.middleware.exception :as exception]
     [storm.stormdnd.web.middleware.formats :as formats]
+    [hiccup.util :as h-utils]
     [storm.stormdnd.web.routes.utils :as utils]
     [storm.stormdnd.web.htmx :refer [ui page] :as htmx]
     [integrant.core :as ig]
@@ -69,7 +70,8 @@
         [:button {:hx-post "/init-mock-data" :hx-target "#main" :hx-swap "innerHTML"} "Init mock state"]
         [:button {:hx-get "/show-add-view" :hx-target "#details" :hx-swap "innerHTML"} "Add entity"]
         [:button {:hx-post (str "/mockadd/goblin") :hx-target "#main" :hx-swap "innerHTML"} "Add Goblin"]
-        [:button {:hx-post "/undo" :hx-target "#main" :hx-swap "innerHTML"} "Undo"]]
+        [:button {:hx-post "/undo" :hx-target "#main" :hx-swap "innerHTML"} "Undo"]
+        [:button {:hx-put "/roll-all-initiative" :hx-target "#main" :hx-swap "innerHTML"} "Initiative"]]
        [:section.container
         [:div#details]
         [:div#main (world-to-view world-state)]]
@@ -82,10 +84,14 @@
 ;; Routes
 (defn ui-routes [_opts]
   [["/" {:get home}]
+   ["/roll-all-initiative" {:put (fn [_req]
+                                   (let [w (engine/add-to-history! `(entity/roll-all-initiative))]
+                                     (ui (world-to-view w)))
+                                   )}]
    ["/add" {:post (fn [{:keys [params]}]
                     (let [name (-> params :name)
                           type (-> params :type)
-                          id (keyword (rand-str 5))                 ; todo replace by (rand-str 5)
+                          id (keyword (rand-str 5))         ; todo replace by (rand-str 5)
                           is-block-valid? (b/get-block type)]
                       (if is-block-valid?
                         (let [w (engine/add-to-history! `(entity/add-entity ~id ~name ~type))] ; todo pass name to add entity
@@ -116,7 +122,7 @@
                           )}]
    ["/change-name/:id" {:put (fn [{:keys [path-params params]}] ; todo refactor with set route
                                (let [id (keyword (-> path-params :id))
-                                     nv (-> params :nv)
+                                     nv (h-utils/escape-html (-> params :nv))
                                      w (engine/add-to-history! `(engine/update-entity ~id (entity/set-attribute "name" ~nv)))]
                                  (ui (world-to-view w)))
                                )}]

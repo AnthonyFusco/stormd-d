@@ -8,11 +8,13 @@
     ;; Edges       
     [kit.edge.server.undertow]
     [storm.stormdnd.web.handler]
+    [kit.edge.utils.nrepl]
 
     ;; Routes
     [storm.stormdnd.web.routes.api]
     
-    [storm.stormdnd.web.routes.ui])
+    [storm.stormdnd.web.routes.ui] 
+    )
   (:gen-class))
 
 ;; log uncaught exceptions in threads

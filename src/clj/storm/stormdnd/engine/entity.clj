@@ -1,5 +1,6 @@
 (ns storm.stormdnd.engine.entity
   (:require [storm.stormdnd.engine.engine :as engine]
+            [storm.stormdnd.engine.dice :as dice]
             [storm.stormdnd.web.routes.block :as b]))
 
 (defn damage
@@ -7,6 +8,20 @@
    (engine/with-entity damage n))
   ([entity n]
    (update entity :hp - n)))
+
+(defn roll-initiative
+  ([]
+   (engine/with-entity roll-initiative))
+  ([entity]
+   (let [dex-modifier (-> entity :block :ability-scores :dex b/calculate-modifier)]
+     (assoc entity :initiative (dice/roll-dice (str "1d20+" dex-modifier))))))
+
+(defn roll-all-initiative                                   ; todo compare with previous world and return patch for history
+  ([]
+   (engine/with-world roll-all-initiative))
+  ([world]
+   (reduce-kv (fn [m k v] (assoc m k (roll-initiative v)))
+              {} world)))                                   ; todo need to filter on meta entity ?
 
 (defn set-attribute
   ([attribute-name nv]
@@ -28,7 +43,7 @@
   ([world id name type]
    (let [block (b/get-block type)
          entity (-> block
-                    (make-entity name type 0 0)                  ; todo roll dices
+                    (make-entity name type 0 0)             ; todo roll dices
                     (with-meta {:type :entity}))]
      (if block
        (engine/add-to-world world id entity)
@@ -63,4 +78,4 @@
   [:div
    [:div.stat-block.encounter
     [:hr.orange-border]
-    (map entity-view entities)]])
+    (map entity-view (sort-by (comp :initiative val) > entities))]])
